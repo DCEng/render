@@ -304,7 +304,7 @@ def viewer(OBJECT_NAME,FILE_PATH):
     #delete_object(token, "test2.f3d")
     
     # Step 2: get signed URL
-    upload_key, s3_url[0] = get_signed_upload(token,OBJECT_NAME,FILE_PATH)
+    upload_key, s3_url = get_signed_upload(token,OBJECT_NAME,FILE_PATH)
 
     print(s3_url[0])
     # Step 3: upload to S3
