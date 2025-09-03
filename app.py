@@ -200,8 +200,18 @@ def upload_file():
         if file.filename == "":
             return "No selected file"
 
+        # --- LOGGING ---
+        print(f"Uploaded file object: {file}")              # the FileStorage object
+        print(f"Original filename: {file.filename}")       # filename user uploaded
+        print(f"Content type: {file.content_type}")        # MIME type
+        file.seek(0, os.SEEK_END)
+        size = file.tell()
+        print(f"File size (bytes): {size}")
+        file.seek(0)  # reset pointer before saving
+        # --- END LOGGING ---
+        
         # Always overwrite with "current.f3d"
-        OBJECT_NAME = file#"current.f3d"
+        OBJECT_NAME = "current.f3d"
         save_path = os.path.join(app.config["UPLOAD_FOLDER"], OBJECT_NAME)
         file.save(save_path)
 
