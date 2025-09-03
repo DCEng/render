@@ -23,9 +23,9 @@ app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 #OBJECT_NAME  = "current.f3d"
 
 BUCKET_KEY = "bucket62218"
-OBJECT_NAME = "test2.f3d"
+#OBJECT_NAME = "test2.f3d"
 #FILE_PATH = r"test2.f3d"
-FILE_PATH = os.path.join(UPLOAD_FOLDER, OBJECT_NAME)
+#FILE_PATH = os.path.join(UPLOAD_FOLDER, OBJECT_NAME)
 
 
 # -------------------------------
@@ -192,7 +192,13 @@ def entry_point():
 
 @app.route("/", methods=["GET", "POST"])
 def upload_file():
-    global OBJECT_NAME  # so we can change it
+    
+    # OBJECT_NAME = "test2.f3d"
+    # FILE_PATH = r"test2.f3d"
+    # FILE_PATH = os.path.join(UPLOAD_FOLDER, OBJECT_NAME)
+
+
+    
     if request.method == "POST":
         if "file" not in request.files:
             return "No file part"
