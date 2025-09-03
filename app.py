@@ -4,6 +4,8 @@ from flask import Flask, request, redirect, url_for, render_template_string
 import time
 
 
+CLIENT_ID = os.environ.get("CLIENT_ID")
+CLIENT_SECRET = os.environ.get("CLIENT_SECRET")
 
 APS_BASE = "https://developer.api.autodesk.com"
 
