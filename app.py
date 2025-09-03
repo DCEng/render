@@ -310,6 +310,7 @@ def viewer(OBJECT_NAME,FILE_PATH):
     # Step 3: upload to S3
     etag = put_to_s3(s3_url[0],OBJECT_NAME,FILE_PATH)
 
+    print("XXXXXX",OBJECT_NAME,FILE_PATH)
     # Step 4: finalize and get objectId
     object_id = finalize_upload(token, upload_key, etag,OBJECT_NAME,FILE_PATH)
     
