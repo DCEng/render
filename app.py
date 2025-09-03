@@ -166,73 +166,6 @@ def wait_for_translation(token, urn, timeout=120):
 def get_base64_urn(object_id):
     return base64.b64encode(object_id.encode()).decode().rstrip("=")
 
-# -------------------------------
-# Flask route
-# -------------------------------
-HTML_TEMPLATE = """
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <title>APS Viewer</title>
-  <script src="https://developer.api.autodesk.com/modelderivative/v2/viewers/7.*/viewer3D.min.js"></script>
-  <link rel="stylesheet" href="https://developer.api.autodesk.com/modelderivative/v2/viewers/7.*/style.min.css">
-  <style>html,body,#viewer{margin:0;padding:0;width:100%;height:100%;}</style>
-</head>
-<body>
-  <div id="viewer"></div>
-  <script>
-    const options = {
-      env: 'AutodeskProduction',
-      accessToken: '{{token}}'
-    };
-    const viewerDiv = document.getElementById('viewer');
-    const viewer = new Autodesk.Viewing.GuiViewer3D(viewerDiv);    
-    console.log("Token:", '{{token}}');
-    console.log("URN:", '{{urn}}');    
-    Autodesk.Viewing.Initializer(options, () => {
-      viewer.start();
-      const documentId = 'urn:{{urn}}';
-      Autodesk.Viewing.Document.load(documentId, 
-        doc => {
-          const defaultModel = doc.getRoot().getDefaultGeometry();
-          viewer.loadDocumentNode(doc, defaultModel);
-        },
-        err => console.error(err)
-      );
-    });
-  </script>
-</body>
-</html>
-"""
-
-@app.route("/xx", methods=["GET", "POST"])
-def entry_point():
-    if request.method == "POST":
-        filename = request.form.get("filename")
-        params = [request.form.get(f"param{i}") for i in range(1, 7)]
-
-        # store globals (temporary)
-        global user_filename, user_params
-        user_filename = filename
-        user_params = params
-
-        # just call the existing function
-        return viewer()
-
-    # HTML form page
-    return """
-        <form method="post">
-            File name: <input type="text" name="filename"><br>
-            """ + "".join(
-                f'Param {i}: <input type="number" name="param{i}"><br>' for i in range(1, 7)
-            ) + """
-            <input type="submit" value="Submit">
-        </form>
-    """
-    
-    
-
 
 @app.route("/", methods=["GET", "POST"])
 def upload_file():
@@ -283,7 +216,7 @@ def viewer(OBJECT_NAME,FILE_PATH):
     # Step 1: get token
     token = get_access_token()
 
-    delete_object(token, "test2.f3d")
+    #delete_object(token, "test2.f3d")
     
     # Step 2: get signed URL
     upload_key, s3_url = get_signed_upload(token,OBJECT_NAME,FILE_PATH)
