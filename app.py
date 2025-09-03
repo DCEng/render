@@ -89,6 +89,25 @@ def get_signed_upload(token,OBJECT_NAME,FILE_PATH):
     return data["uploadKey"], data["urls"][0]
 
 
+def delete_object(token, OBJECT_NAME):
+
+    enc_obj = urllib.parse.quote(OBJECT_NAME, safe="")
+
+    res = requests.delete(
+        f"{APS_BASE}/oss/v2/buckets/{BUCKET_KEY}/objects/{enc_obj}",
+        headers={"Authorization": f"Bearer {token}"},
+        timeout=30
+    )
+
+    try:
+        res.raise_for_status()
+        return True
+    except requests.exceptions.HTTPError as e:
+        print(f"Failed to delete {OBJECT_NAME}: {e} - {res.text}")
+        return False
+        
+        
+        
 def put_to_s3(signed_url,OBJECT_NAME,FILE_PATH):
     
     FILE_PATH = os.path.join(UPLOAD_FOLDER, OBJECT_NAME)
@@ -272,7 +291,7 @@ def viewer(OBJECT_NAME,FILE_PATH):
     # Step 1: get token
     token = get_access_token()
 
-    list_objects(token,BUCKET_KEY)
+    delete_object(token, "test2.f3d")
     
     # Step 2: get signed URL
     upload_key, s3_url = get_signed_upload(token,OBJECT_NAME,FILE_PATH)
