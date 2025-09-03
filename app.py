@@ -63,6 +63,24 @@ def list_objects(token,bucket_key):
     return objects
     
     
+
+
+def upload_file(access_token,OBJECT_NAME,FILE_PATH):
+    
+    url = f"{APS_BASE}/oss/v2/buckets/{BUCKET_KEY}/objects/{OBJECT_NAME}"
+    
+    headers = {"Authorization": f"Bearer {access_token}"}
+    
+    with open(FILE_PATH, "rb") as f:
+        res = requests.put(url, headers=headers, data=f)
+        
+    res.raise_for_status()
+    object_id = res.json()["objectId"]
+    
+    print(f"File uploaded: {OBJECT_NAME}")
+    
+    return object_id
+    
     
 def get_signed_upload(token,OBJECT_NAME,FILE_PATH):
     
@@ -78,7 +96,7 @@ def get_signed_upload(token,OBJECT_NAME,FILE_PATH):
     res.raise_for_status()
     data = res.json()
     
-    return data["uploadKey"], data["urls"][0]
+    return data["uploadKey"], data["urls"]
 
 
 def delete_object(token, OBJECT_NAME):
@@ -286,8 +304,9 @@ def viewer(OBJECT_NAME,FILE_PATH):
     #delete_object(token, "test2.f3d")
     
     # Step 2: get signed URL
-    upload_key, s3_url = get_signed_upload(token,OBJECT_NAME,FILE_PATH)
+    upload_key, s3_url[0] = get_signed_upload(token,OBJECT_NAME,FILE_PATH)
 
+    print(s3_url[0])
     # Step 3: upload to S3
     etag = put_to_s3(s3_url,OBJECT_NAME,FILE_PATH)
 
