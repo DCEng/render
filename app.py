@@ -16,13 +16,16 @@ app = Flask(__name__)
 CLIENT_ID = "asgCv48a5rhK7Ht1HuQN8RlLIiQ8IHDCBvi6asGJeyfuqSGn"
 CLIENT_SECRET = "5aZz7M6YWCuBAWJGXKdZVf0W5YoYPB0O7lE0dsadLqzJzaJ3Xy6G31sudJeft9Mi"
 
-BUCKET_KEY = "bucket62218"
-OBJECT_NAME = "test2.f3d"
-FILE_PATH = r"test2.f3d"
 
 UPLOAD_FOLDER = "uploads"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
+#OBJECT_NAME  = "current.f3d"
+
+BUCKET_KEY = "bucket62218"
+OBJECT_NAME = "test2.f3d"
+FILE_PATH = r"test2.f3d"
+
 
 
 # -------------------------------
@@ -183,33 +186,34 @@ def entry_point():
     
     
 
+
 @app.route("/upload", methods=["GET", "POST"])
 def upload_file():
+    global OBJECT_NAME  # so we can change it
     if request.method == "POST":
-        # check if a file was uploaded
         if "file" not in request.files:
             return "No file part"
         file = request.files["file"]
         if file.filename == "":
             return "No selected file"
 
-        # save to uploads folder
-        save_path = os.path.join(app.config["UPLOAD_FOLDER"], file.filename)
+        # Always overwrite with "current.f3d"
+        OBJECT_NAME = "current.f3d"
+        save_path = os.path.join(app.config["UPLOAD_FOLDER"], OBJECT_NAME)
         file.save(save_path)
 
-        return f"File uploaded successfully: {file.filename}"
+        return f"Upload complete. File is now available at /uploads/{OBJECT_NAME}"
 
-    # upload form
     return """
-        <h2>Upload a File</h2>
+        <h2>Upload a File (will overwrite current.f3d)</h2>
         <form method="post" enctype="multipart/form-data">
             <input type="file" name="file">
             <input type="submit" value="Upload">
         </form>
     """
-    
-    
-    
+
+
+
 def viewer():
     # Step 1: get token
     token = get_access_token()
