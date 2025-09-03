@@ -44,8 +44,39 @@ def get_access_token():
     res.raise_for_status()
     return res.json()["access_token"]
 
+
+def list_objects(token,bucket_key):
+    objects = []
+    url = f"{APS_BASE}/oss/v2/buckets/{bucket_key}/objects"
+
+    start_at = 0
+    limit = 10  # APS allows up to 100 per request
+
+    HEADERS = {
+        "Authorization": f"Bearer {token}"
+    }
+
+    while True:
+        params = {"startAt": start_at, "limit": limit}
+        r = requests.get(url, headers=HEADERS, params=params)
+        r.raise_for_status()
+        data = r.json()
+
+        objects.extend(data.get("items", []))
+
+        # Check if more objects remain
+        if start_at + limit >= data.get("count", 0):
+            break
+        start_at += limit
+
+    return objects
+    
+    
+    
 def get_signed_upload(token,OBJECT_NAME,FILE_PATH):
+    
     enc_obj = urllib.parse.quote(OBJECT_NAME, safe="")
+    
     res = requests.get(
         f"{APS_BASE}/oss/v2/buckets/{BUCKET_KEY}/objects/{enc_obj}/signeds3upload",
         params={"parts": 1},
@@ -54,7 +85,9 @@ def get_signed_upload(token,OBJECT_NAME,FILE_PATH):
     )
     res.raise_for_status()
     data = res.json()
+    
     return data["uploadKey"], data["urls"][0]
+
 
 def put_to_s3(signed_url,OBJECT_NAME,FILE_PATH):
     
@@ -233,31 +266,7 @@ def upload_file():
     """
 
 
-def list_objects(token,bucket_key):
-    objects = []
-    url = f"https://developer.api.autodesk.com/oss/v2/buckets/{bucket_key}/objects"
-    start_at = 0
-    limit = 100  # APS allows up to 100 per request
 
-    HEADERS = {
-        "Authorization": f"Bearer {token}"
-    }
-
-    while True:
-        params = {"startAt": start_at, "limit": limit}
-        r = requests.get(url, headers=HEADERS, params=params)
-        r.raise_for_status()
-        data = r.json()
-
-        objects.extend(data.get("items", []))
-
-        # Check if more objects remain
-        if start_at + limit >= data.get("count", 0):
-            break
-        start_at += limit
-
-    return objects
-    
     
 def viewer(OBJECT_NAME,FILE_PATH):
     # Step 1: get token
