@@ -20,6 +20,10 @@ BUCKET_KEY = "bucket62218"
 OBJECT_NAME = "test2.f3d"
 FILE_PATH = r"test2.f3d"
 
+UPLOAD_FOLDER = "uploads"
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
+
 
 # -------------------------------
 # APS helper functions
@@ -179,6 +183,33 @@ def entry_point():
     
     
 
+@app.route("/upload", methods=["GET", "POST"])
+def upload_file():
+    if request.method == "POST":
+        # check if a file was uploaded
+        if "file" not in request.files:
+            return "No file part"
+        file = request.files["file"]
+        if file.filename == "":
+            return "No selected file"
+
+        # save to uploads folder
+        save_path = os.path.join(app.config["UPLOAD_FOLDER"], file.filename)
+        file.save(save_path)
+
+        return f"File uploaded successfully: {file.filename}"
+
+    # upload form
+    return """
+        <h2>Upload a File</h2>
+        <form method="post" enctype="multipart/form-data">
+            <input type="file" name="file">
+            <input type="submit" value="Upload">
+        </form>
+    """
+    
+    
+    
 def viewer():
     # Step 1: get token
     token = get_access_token()
