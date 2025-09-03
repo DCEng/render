@@ -7,30 +7,19 @@ import time
 
 APS_BASE = "https://developer.api.autodesk.com"
 
-# -------------------------------
-# Flask app
-# -------------------------------
+
 app = Flask(__name__)
 
-# Replace these with your APS app credentials
-CLIENT_ID = "asgCv48a5rhK7Ht1HuQN8RlLIiQ8IHDCBvi6asGJeyfuqSGn"
-CLIENT_SECRET = "5aZz7M6YWCuBAWJGXKdZVf0W5YoYPB0O7lE0dsadLqzJzaJ3Xy6G31sudJeft9Mi"
 
 
 UPLOAD_FOLDER = "uploaded"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
-#OBJECT_NAME  = "current.f3d"
 
 BUCKET_KEY = "bucket62218"
-#OBJECT_NAME = "test2.f3d"
-#FILE_PATH = r"test2.f3d"
-#FILE_PATH = os.path.join(UPLOAD_FOLDER, OBJECT_NAME)
 
 
-# -------------------------------
-# APS helper functions
-# -------------------------------
+
 def get_access_token():
     res = requests.post(
         f"{APS_BASE}/authentication/v2/token",
@@ -83,6 +72,7 @@ def get_signed_upload(token,OBJECT_NAME,FILE_PATH):
         headers={"Authorization": f"Bearer {token}"},
         timeout=30
     )
+    
     res.raise_for_status()
     data = res.json()
     
