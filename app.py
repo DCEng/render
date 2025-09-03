@@ -17,7 +17,7 @@ CLIENT_ID = "asgCv48a5rhK7Ht1HuQN8RlLIiQ8IHDCBvi6asGJeyfuqSGn"
 CLIENT_SECRET = "5aZz7M6YWCuBAWJGXKdZVf0W5YoYPB0O7lE0dsadLqzJzaJ3Xy6G31sudJeft9Mi"
 
 
-UPLOAD_FOLDER = "uploads"
+UPLOAD_FOLDER = "uploaded"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 #OBJECT_NAME  = "current.f3d"
