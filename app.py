@@ -57,7 +57,8 @@ def get_signed_upload(token):
     return data["uploadKey"], data["urls"][0]
 
 def put_to_s3(signed_url):
-     FILE_PATH = os.path.join(UPLOAD_FOLDER, OBJECT_NAME)
+    
+    FILE_PATH = os.path.join(UPLOAD_FOLDER, OBJECT_NAME)
     with open(FILE_PATH, "rb") as f:
         put = requests.put(
             signed_url, data=f,
