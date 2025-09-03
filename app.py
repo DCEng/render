@@ -184,7 +184,7 @@ def entry_point():
     
     
     
-def viewer(**kwargs):
+def viewer(filename,**kwargs):
     # Step 1: get token
     token = get_access_token()
 
