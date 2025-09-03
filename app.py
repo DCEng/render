@@ -24,8 +24,8 @@ app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
 BUCKET_KEY = "bucket62218"
 OBJECT_NAME = "test2.f3d"
-FILE_PATH = r"test2.f3d"
-
+#FILE_PATH = r"test2.f3d"
+FILE_PATH = os.path.join(UPLOAD_FOLDER, OBJECT_NAME)
 
 
 # -------------------------------
@@ -57,6 +57,7 @@ def get_signed_upload(token):
     return data["uploadKey"], data["urls"][0]
 
 def put_to_s3(signed_url):
+     FILE_PATH = os.path.join(UPLOAD_FOLDER, OBJECT_NAME)
     with open(FILE_PATH, "rb") as f:
         put = requests.put(
             signed_url, data=f,
@@ -71,6 +72,7 @@ def put_to_s3(signed_url):
 
 def finalize_upload(token, upload_key, etag):
     enc_obj = urllib.parse.quote(OBJECT_NAME, safe="")
+    FILE_PATH = os.path.join(UPLOAD_FOLDER, OBJECT_NAME)
     payload = {
         "uploadKey": upload_key,
         "eTags": [etag],
