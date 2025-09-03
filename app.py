@@ -2,6 +2,7 @@ import os, json, base64, requests, urllib.parse
 from flask import Flask, render_template_string
 import time
 
+
 APS_BASE = "https://developer.api.autodesk.com"
 
 # -------------------------------
@@ -149,7 +150,38 @@ HTML_TEMPLATE = """
 </html>
 """
 
-@app.route("/")
+@app.route("/", methods=["GET", "POST"])
+def entry_point():
+    if request.method == "POST":
+        # Collect the 6 numeric parameters
+        params = [request.form.get(f"param{i}") for i in range(1, 7)]
+        # Collect the string parameter (filename)
+        filename = request.form.get("filename")
+
+        # Redirect to your existing viewer route, passing params + filename
+        return redirect(url_for(
+            "viewer",
+            filename=filename,
+            **{f"param{i}": params[i-1] for i in range(1, 7)}
+        ))
+
+    # GET: render the form
+    return """
+    <h2>Enter parameters and file name</h2>
+    <form method="post">
+        <label>File name (.f3d): <input type="text" name="filename" required></label><br><br>
+        <label>Param1: <input type="number" step="any" name="param1" required></label><br>
+        <label>Param2: <input type="number" step="any" name="param2" required></label><br>
+        <label>Param3: <input type="number" step="any" name="param3" required></label><br>
+        <label>Param4: <input type="number" step="any" name="param4" required></label><br>
+        <label>Param5: <input type="number" step="any" name="param5" required></label><br>
+        <label>Param6: <input type="number" step="any" name="param6" required></label><br><br>
+        <button type="submit">Submit</button>
+    </form>
+    """
+    
+    
+    
 def viewer():
     # Step 1: get token
     token = get_access_token()
