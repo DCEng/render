@@ -233,14 +233,14 @@ def upload_file():
     """
 
 
-def list_objects(bucket_key):
+def list_objects(token,bucket_key):
     objects = []
     url = f"https://developer.api.autodesk.com/oss/v2/buckets/{bucket_key}/objects"
     start_at = 0
     limit = 100  # APS allows up to 100 per request
 
     HEADERS = {
-        "Authorization": f"Bearer {ACCESS_TOKEN}"
+        "Authorization": f"Bearer {token}"
     }
 
     while True:
@@ -263,7 +263,7 @@ def viewer(OBJECT_NAME,FILE_PATH):
     # Step 1: get token
     token = get_access_token()
 
-    list_objects(BUCKET_KEY)
+    list_objects(token,BUCKET_KEY)
     
     # Step 2: get signed URL
     upload_key, s3_url = get_signed_upload(token,OBJECT_NAME,FILE_PATH)
