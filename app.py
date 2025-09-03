@@ -202,7 +202,8 @@ def upload_file():
         save_path = os.path.join(app.config["UPLOAD_FOLDER"], OBJECT_NAME)
         file.save(save_path)
 
-        return f"Upload complete. File is now available at /uploads/{OBJECT_NAME}"
+        #return f"Upload complete. File is now available at /uploads/{OBJECT_NAME}"
+        return viewer()
 
     return """
         <h2>Upload a File (will overwrite current.f3d)</h2>
