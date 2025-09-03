@@ -201,7 +201,7 @@ def upload_file():
             return "No selected file"
 
         # Always overwrite with "current.f3d"
-        OBJECT_NAME = "current.f3d"
+        OBJECT_NAME = file#"current.f3d"
         save_path = os.path.join(app.config["UPLOAD_FOLDER"], OBJECT_NAME)
         file.save(save_path)
 
