@@ -162,7 +162,7 @@ HTML_TEMPLATE = """
 </html>
 """
 
-@app.route("/", methods=["GET", "POST"])
+@app.route("/xx", methods=["GET", "POST"])
 def entry_point():
     if request.method == "POST":
         filename = request.form.get("filename")
@@ -190,7 +190,7 @@ def entry_point():
     
 
 
-@app.route("/upload", methods=["GET", "POST"])
+@app.route("/", methods=["GET", "POST"])
 def upload_file():
     global OBJECT_NAME  # so we can change it
     if request.method == "POST":
