@@ -160,12 +160,15 @@ def entry_point():
         # Collect the string parameter (filename)
         filename = request.form.get("filename")
 
-        # Redirect to your existing viewer route, passing params + filename
-        return redirect(url_for(
-            "viewer",
-            filename=filename,
-            **{f"param{i}": params[i-1] for i in range(1, 7)}
-        ))
+        # # Redirect to your existing viewer route, passing params + filename
+        # return redirect(url_for(
+            # "viewer",
+            # filename=filename,
+            # **{f"param{i}": params[i-1] for i in range(1, 7)}
+        # ))
+        
+        viewer()
+
 
     # GET: render the form
     return """
@@ -183,8 +186,8 @@ def entry_point():
     """
     
     
-    
-def viewer(filename,**kwargs):
+
+def viewer():
     # Step 1: get token
     token = get_access_token()
 
