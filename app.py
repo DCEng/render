@@ -44,7 +44,7 @@ def get_access_token():
     res.raise_for_status()
     return res.json()["access_token"]
 
-def get_signed_upload(token):
+def get_signed_upload(token,OBJECT_NAME,FILE_PATH):
     enc_obj = urllib.parse.quote(OBJECT_NAME, safe="")
     res = requests.get(
         f"{APS_BASE}/oss/v2/buckets/{BUCKET_KEY}/objects/{enc_obj}/signeds3upload",
@@ -56,7 +56,7 @@ def get_signed_upload(token):
     data = res.json()
     return data["uploadKey"], data["urls"][0]
 
-def put_to_s3(signed_url):
+def put_to_s3(signed_url,OBJECT_NAME,FILE_PATH):
     
     FILE_PATH = os.path.join(UPLOAD_FOLDER, OBJECT_NAME)
     with open(FILE_PATH, "rb") as f:
@@ -71,7 +71,7 @@ def put_to_s3(signed_url):
         raise RuntimeError("Missing ETag from S3 upload")
     return etag.strip('"')  # strip quotes for APS finalize
 
-def finalize_upload(token, upload_key, etag):
+def finalize_upload(token, upload_key, etag,OBJECT_NAME,FILE_PATH):
     enc_obj = urllib.parse.quote(OBJECT_NAME, safe="")
     FILE_PATH = os.path.join(UPLOAD_FOLDER, OBJECT_NAME)
     payload = {
@@ -222,7 +222,7 @@ def upload_file():
         file.save(save_path)
 
         #return f"Upload complete. File is now available at /uploads/{OBJECT_NAME}"
-        return viewer()
+        return viewer(OBJECT_NAME,save_path)
 
     return """
         <h2>Upload a File (will overwrite current.f3d)</h2>
@@ -234,18 +234,18 @@ def upload_file():
 
 
 
-def viewer():
+def viewer(OBJECT_NAME,FILE_PATH):
     # Step 1: get token
     token = get_access_token()
 
     # Step 2: get signed URL
-    upload_key, s3_url = get_signed_upload(token)
+    upload_key, s3_url = get_signed_upload(token,OBJECT_NAME,FILE_PATH)
 
     # Step 3: upload to S3
-    etag = put_to_s3(s3_url)
+    etag = put_to_s3(s3_url,OBJECT_NAME,FILE_PATH)
 
     # Step 4: finalize and get objectId
-    object_id = finalize_upload(token, upload_key, etag)
+    object_id = finalize_upload(token, upload_key, etag,OBJECT_NAME,FILE_PATH)
     
     # Step 5: base64 URN
     urn = get_base64_urn(object_id)
