@@ -251,7 +251,27 @@ def entry_point():
     
     
 
+@app.route("/list_bucket", methods=["GET"])
+def list_bucket():
+    
+    token = get_access_token()
+    
+    url = f"https://developer.api.autodesk.com/oss/v2/buckets/{BUCKET_KEY}/objects"
 
+    headers = {
+        "Authorization": f"Bearer {token}"
+    }
+
+    response = requests.get(url, headers=headers)
+
+    if response.status_code == 200:
+        return jsonify(response.json()), 200
+    else:
+        return jsonify({"error": response.text}), response.status_code
+        
+        
+        
+        
 @app.route("/", methods=["GET", "POST"])
 def upload_file():
     
