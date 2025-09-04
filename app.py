@@ -263,9 +263,15 @@ def list_bucket():
     }
 
     response = requests.get(url, headers=headers)
-
+    
+    
+    
+    
+    
     if response.status_code == 200:
-        return jsonify(response.json()), 200
+        urn = get_base64_urn(response['items'][0]['object_id'])
+        return render_template_string(HTML_TEMPLATE, token=token, urn=urn)
+        #return jsonify(response.json()), 200
     else:
         return jsonify({"error": response.text}), response.status_code
         
